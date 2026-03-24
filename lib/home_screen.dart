@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'webview_screen.dart';
+import 'state_stamp_page.dart'; // Ensure you import your Native State Stamp page if you are using it
 
-// Brand Palette from Logo
-const Color taxShieldDarkBlue = Color(0xFF1B3D59);
-const Color taxShieldLightBlue = Color(0xFF4EB4E8);
+// New Brand Palette from the Promotional Image
+const Color taxShieldDeepNavy = Color(0xFF1F2F4A); // Keep Navy for text/logo (for contrast)
+const Color taxShieldAccentSage = Color(0xFFB5CFB0); // Greenish background tone (New Accent)
+const Color taxShieldBgCream = Color(0xFFF0EBE0); // Beige/Cream background (New Base)
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController _entranceController;
 
-  // Your specific links preserved here
   final List<Map<String, dynamic>> _menuItems = [
     {
       'label': 'Payment',
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     {
       'label': 'State Stamp',
       'icon': Icons.description_rounded,
-      'url': 'https://taxshieldadvisor.com/state_stamp.html'
+      'url': 'NATIVE_PAGE' // Marker to navigate to StateStampPage()
     },
   ];
 
@@ -59,22 +60,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void _openWebView(BuildContext context, String url) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => WebViewScreen(url: url)),
-    );
+  void _handleNavigation(BuildContext context, String destination) {
+    if (destination == 'NATIVE_PAGE') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const StateStampPage()), // Nav to native
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WebViewScreen(url: destination)),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Modern light background
+      backgroundColor: taxShieldBgCream, // New Beige/Cream Background
       appBar: AppBar(
-        backgroundColor: taxShieldDarkBlue,
+        backgroundColor: taxShieldBgCream, // Keeps AppBar blending
         elevation: 0,
         centerTitle: true,
-        title: Image.asset('assets/logo2.png', height: 40, 
+        // Assuming your logo (assets/logo2.png) is the full text logo. If not, use image_1.png (icon only)
+        title: Image.asset('assets/logo2.png', height: 45, 
           errorBuilder: (context, error, stackTrace) => const Text("TAXSHIELD")),
       ),
       body: CustomScrollView(
@@ -85,26 +94,25 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Hello,", style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  const Text("Welcome Back", 
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: taxShieldDarkBlue)),
+                  const Text("Start Your Business", style: TextStyle(fontSize: 18, color: taxShieldDeepNavy)),
+                  const Text("With Ease", 
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: taxShieldDeepNavy)),
                 ],
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.1,
+                childAspectRatio: 1.15, // Adjusted for a softer look
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final item = _menuItems[index];
-                  // Staggered Entrance Animation logic
                   final animation = CurvedAnimation(
                     parent: _entranceController,
                     curve: Interval((index * 0.1).clamp(0, 1.0), 1.0, curve: Curves.easeOutBack),
@@ -117,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: _ModernMenuCard(
                         label: item['label'],
                         icon: item['icon'],
-                        onTap: () => _openWebView(context, item['url']),
+                        onTap: () => _handleNavigation(context, item['url']),
                       ),
                     ),
                   );
@@ -160,12 +168,13 @@ class _ModernMenuCardState extends State<_ModernMenuCard> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: _isPressed ? taxShieldLightBlue : taxShieldDarkBlue,
-          borderRadius: BorderRadius.circular(20),
+          // Colors: Sage Green defaults to cream on press.
+          color: _isPressed ? taxShieldBgCream : taxShieldAccentSage,
+          borderRadius: BorderRadius.circular(22), // Soft, rounded corners
           boxShadow: [
             BoxShadow(
-              color: taxShieldDarkBlue.withOpacity(0.2),
-              blurRadius: _isPressed ? 4 : 10,
+              color: taxShieldDeepNavy.withOpacity(_isPressed ? 0.05 : 0.1),
+              blurRadius: _isPressed ? 4 : 12,
               offset: Offset(0, _isPressed ? 2 : 6),
             )
           ],
@@ -174,13 +183,14 @@ class _ModernMenuCardState extends State<_ModernMenuCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(widget.icon, size: 32, color: _isPressed ? Colors.white : taxShieldLightBlue),
+            Icon(widget.icon, size: 36, color: taxShieldDeepNavy), // Using navy for icons
             Text(
               widget.label,
-              style: TextStyle(
-                color: _isPressed ? taxShieldDarkBlue : Colors.white,
+              style: const TextStyle(
+                color: taxShieldDeepNavy, // Navy text for contrast
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
+                letterSpacing: 0.5,
               ),
             ),
           ],
