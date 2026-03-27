@@ -61,6 +61,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo2.png
+    - assets/Logo-no-bg.png
     - assets/taxshield-video.mp4
 
   # To add assets to your application, add an assets section, like this:
