@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'webview_screen.dart';
-import 'state_stamp_page.dart'; // Ensure you import your Native State Stamp page if you are using it
+import 'state_stamp_page.dart'; 
 
 // New Brand Palette from the Promotional Image
 const Color taxShieldDeepNavy = Color(0xFF1F2F4A); // Keep Navy for text/logo (for contrast)
@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         elevation: 0,
         centerTitle: true,
         // Assuming your logo (assets/logo2.png) is the full text logo. If not, use image_1.png (icon only)
-        title: Image.asset('assets/logo2.png', height: 45, 
+        title: Image.asset('assets/Logo-no-bg.png', height: 45, 
           errorBuilder: (context, error, stackTrace) => const Text("TAXSHIELD")),
       ),
       body: CustomScrollView(
