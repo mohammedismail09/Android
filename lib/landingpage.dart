@@ -4,58 +4,75 @@ import 'home_screen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
+
   @override
   State<LandingPage> createState() => _LandingPageState();
 }
 
 class _LandingPageState extends State<LandingPage> {
   late VideoPlayerController _controller;
+  bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/taxshield-video.mp4')
-      ..initialize().then((_) {
+    _controller = VideoPlayerController.asset('assets/mp4/1080-taxshield-animation.mp4');
+
+    _controller.initialize().then((_) {
+      if (mounted) {
         setState(() {});
-        _controller.setLooping(true);
         _controller.play();
-      });
+        
+        // Use a Listener specifically to wait for the video to actually START moving
+        _controller.addListener(_processVideoState);
+      }
+    }).catchError((error) {
+      _navigateToHome();
+    });
+  }
+
+  void _processVideoState() {
+    if (!mounted || _hasNavigated) return;
+
+    final bool isAtEnd = _controller.value.position >= _controller.value.duration;
+
+    if (isAtEnd && _controller.value.position > const Duration(seconds: 1)) {
+      _hasNavigated = true;
+      _navigateToHome();
+    }
+  }
+
+  void _navigateToHome() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          _controller.value.isInitialized
-              ? SizedBox.expand(child: FittedBox(fit: BoxFit.cover, child: SizedBox(width: _controller.value.size.width, height: _controller.value.size.height, child: VideoPlayer(_controller))))
-              : Container(color: Colors.black),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 100.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 60,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1A2E44),
-                    shape: const StadiumBorder(),
+      backgroundColor: const Color(0xFFF2EEE4), 
+      body: Center(
+        child: _controller.value.isInitialized
+            ? SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _controller.value.size.width,
+                    height: _controller.value.size.height,
+                    child: VideoPlayer(_controller),
                   ),
-                  onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen())),
-                  child: const Text("GET STARTED", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
-              ),
-            ),
-          ),
-        ],
+              )
+            : const SizedBox.shrink(),
       ),
     );
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_processVideoState);
     _controller.dispose();
     super.dispose();
   }
