@@ -6,10 +6,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Color constants
-    // const Color sageGreen = Color(0xFFB9C9B1);
     const Color darkBlue = Color(0xFF1A2E44);
-    // const Color creamBg = Color(0xFFF2EEE4);
 
     return Scaffold(
       body: SafeArea(
@@ -71,10 +68,11 @@ class HomeScreen extends StatelessWidget {
                     mainAxisSpacing: 20,
                     childAspectRatio: 1.1,
                     children: [
-                      _buildCard(context, "Payment", Icons.credit_card, "https://payu.in/pay/C396BC8D6D52A9B2EC93D7842231ED57?source=app"),
+                      // _buildCard(context, "Payment", Icons.credit_card, "https://payu.in/pay/C396BC8D6D52A9B2EC93D7842231ED57?source=app"),
+                      _buildCard(context, "Payment", Icons.credit_card, "https://pages.razorpay.com/taxshield"),
                       _buildCard(context, "About Us", Icons.business, "https://taxshieldadvisor.com/"),
                       _buildCard(context, "Contact Us", Icons.contact_page, "https://taxshieldadvisor.com/contact/index.html"),
-                      _buildCard(context, "Pricing", Icons.local_offer, "https://taxshieldadvisor.com/pricing/pricing.html"),
+                      _buildCard(context, "Pricing", Icons.local_offer, "https://taxshieldadvisor.com/pricing/index.html"),
                       _buildCard(context, "State Stamp", Icons.description, "https://taxshieldadvisor.com/state_stamp.html"),
                       _buildCard(context, "Appointment", Icons.calendar_month, "https://calendly.com/simar-taxshieldadvisor"),
                     ],
